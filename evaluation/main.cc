@@ -1,53 +1,52 @@
 /**
-* This file is part of ibow-lcd.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* ibow-lcd is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* ibow-lcd is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with ibow-lcd. If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include <fstream>
-#include <iostream>
+ * This file is part of ibow-lcd.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * ibow-lcd is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ibow-lcd is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ibow-lcd. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <boost/filesystem.hpp>
+#include <fstream>
+#include <iostream>
 #include <opencv2/features2d.hpp>
 
-#include "lcevaluator.h"
 #include "json.hpp"
+#include "lcevaluator.h"
 
 using json = nlohmann::json;
 
 void getFilenames(const std::string& directory,
                   std::vector<std::string>* filenames) {
-    using namespace boost::filesystem;
+  using namespace boost::filesystem;
 
-    filenames->clear();
-    path dir(directory);
+  filenames->clear();
+  path dir(directory);
 
-    // Retrieving, sorting and filtering filenames.
-    std::vector<path> entries;
-    copy(directory_iterator(dir), directory_iterator(), back_inserter(entries));
-    sort(entries.begin(), entries.end());
-    for (auto it = entries.begin(); it != entries.end(); it++) {
-        std::string ext = it->extension().c_str();
-        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  // Retrieving, sorting and filtering filenames.
+  std::vector<path> entries;
+  copy(directory_iterator(dir), directory_iterator(), back_inserter(entries));
+  sort(entries.begin(), entries.end());
+  for (auto it = entries.begin(); it != entries.end(); it++) {
+    std::string ext = it->extension().c_str();
+    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-        if (ext == ".png" || ext == ".jpg" ||
-            ext == ".ppm" || ext == ".jpeg") {
-            filenames->push_back(it->string());
-        }
+    if (ext == ".png" || ext == ".jpg" || ext == ".ppm" || ext == ".jpeg") {
+      filenames->push_back(it->string());
     }
+  }
 }
 
 int main(int argc, char** argv) {
@@ -160,7 +159,7 @@ int main(int argc, char** argv) {
     // Writing the results to a file
     char output_filename[500];
     sprintf(output_filename, "%s%s/loops.txt", results_dir.c_str(),
-                                               config_name.c_str());
+            config_name.c_str());
     std::ofstream output_file(output_filename);
     eval.detectLoops(image_ids, kps, descs, output_file);
     output_file.close();
@@ -182,21 +181,20 @@ int main(int argc, char** argv) {
       params.island_size = js["executions"][i]["island_size"];
       params.min_inliers = js["executions"][i]["min_inliers"];
       params.nframes_after_lc = js["executions"][i]["nframes_after_lc"];
-      params.min_consecutive_loops = js["executions"][i]["min_consecutive_loops"];
+      params.min_consecutive_loops =
+          js["executions"][i]["min_consecutive_loops"];
 
       // Configuring the evaluator
       eval.setIndexParams(params);
 
-        // Executing the process
+      // Executing the process
       std::vector<ibow_lcd::LCDetectorResult> results;
       eval.detectLoops(image_ids, kps, descs, &results);
 
       // Writing the results to a file
       char output_filename[500];
-      sprintf(output_filename, "%s%s/loops_%03d.txt",
-                                              results_dir.c_str(),
-                                              config_name.c_str(),
-                                              i);
+      sprintf(output_filename, "%s%s/loops_%03d.txt", results_dir.c_str(),
+              config_name.c_str(), i);
 
       std::ofstream output_file(output_filename);
       for (unsigned j = 0; j < results.size(); j++) {

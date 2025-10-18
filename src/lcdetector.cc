@@ -1,35 +1,33 @@
 /*
-* This file is part of ibow-lcd.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* ibow-lcd is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* ibow-lcd is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with ibow-lcd. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of ibow-lcd.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * ibow-lcd is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ibow-lcd is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ibow-lcd. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "ibow-lcd/lcdetector.h"
 
 namespace ibow_lcd {
 
-LCDetector::LCDetector(const LCDetectorParams& params) :
-      last_lc_island_(-1, 0.0, -1, -1) {
+LCDetector::LCDetector(const LCDetectorParams& params)
+    : last_lc_island_(-1, 0.0, -1, -1) {
   // Creating the image index
-  index_ = std::make_shared<obindex2::ImageIndex>(params.k,
-                                                  params.s,
-                                                  params.t,
-                                                  params.merge_policy,
-                                                  params.purge_descriptors,
-                                                  params.min_feat_apps);
+  index_ = std::make_shared<obindex2::ImageIndex>(
+      params.k, params.s, params.t, params.merge_policy,
+      params.purge_descriptors, params.min_feat_apps);
   // Storing the remaining parameters
   p_ = params.p;
   nndr_ = params.nndr;
@@ -50,8 +48,7 @@ LCDetector::~LCDetector() {}
 
 void LCDetector::process(const unsigned image_id,
                          const std::vector<cv::KeyPoint>& kps,
-                         const cv::Mat& descs,
-                         LCDetectorResult* result) {
+                         const cv::Mat& descs, LCDetectorResult* result) {
   result->query_id = image_id;
 
   // Storing the keypoints and descriptors
@@ -173,9 +170,8 @@ void LCDetector::process(const unsigned image_id,
 }
 
 void LCDetector::debug(const unsigned image_id,
-             const std::vector<cv::KeyPoint>& kps,
-             const cv::Mat& descs,
-             std::ofstream& out_file) {
+                       const std::vector<cv::KeyPoint>& kps,
+                       const cv::Mat& descs, std::ofstream& out_file) {
   auto start = std::chrono::steady_clock::now();
   // Storing the keypoints and descriptors
   prev_kps_.push_back(kps);
@@ -188,13 +184,14 @@ void LCDetector::debug(const unsigned image_id,
   if (queue_ids_.size() < p_) {
     auto end = std::chrono::steady_clock::now();
     auto diff = end - start;
-    out_file << 0 << "\t";  // min_id
-    out_file << 0 << "\t";  // max_id
-    out_file << 0 << "\t";  // img_id
-    out_file << 0 << "\t";  // overlap
-    out_file << 0 << "\t";  // Inliers
+    out_file << 0 << "\t";                         // min_id
+    out_file << 0 << "\t";                         // max_id
+    out_file << 0 << "\t";                         // img_id
+    out_file << 0 << "\t";                         // overlap
+    out_file << 0 << "\t";                         // Inliers
     out_file << index_->numDescriptors() << "\t";  // Voc. Size
-    out_file << std::chrono::duration<double, std::milli>(diff).count() << "\t";  // Time
+    out_file << std::chrono::duration<double, std::milli>(diff).count()
+             << "\t";  // Time
     out_file << std::endl;
     return;
   }
@@ -232,13 +229,14 @@ void LCDetector::debug(const unsigned image_id,
     // No resulting islands
     auto end = std::chrono::steady_clock::now();
     auto diff = end - start;
-    out_file << 0 << "\t";  // min_id
-    out_file << 0 << "\t";  // max_id
-    out_file << 0 << "\t";  // img_id
-    out_file << 0 << "\t";  // overlap
-    out_file << 0 << "\t";  // Inliers
+    out_file << 0 << "\t";                         // min_id
+    out_file << 0 << "\t";                         // max_id
+    out_file << 0 << "\t";                         // img_id
+    out_file << 0 << "\t";                         // overlap
+    out_file << 0 << "\t";                         // Inliers
     out_file << index_->numDescriptors() << "\t";  // Voc. Size
-    out_file << std::chrono::duration<double, std::milli>(diff).count() << "\t";  // Time
+    out_file << std::chrono::duration<double, std::milli>(diff).count()
+             << "\t";  // Time
     out_file << std::endl;
     return;
   }
@@ -273,13 +271,14 @@ void LCDetector::debug(const unsigned image_id,
   auto diff = end - start;
 
   // Writing results
-  out_file << island.min_img_id << "\t";          // min_id
-  out_file << island.max_img_id << "\t";          // max_id
-  out_file << best_img << "\t";                   // img_id
-  out_file << overlap << "\t";                    // overlap
-  out_file << inliers << "\t";                    // Inliers
-  out_file << index_->numDescriptors() << "\t";   // Voc. Size
-  out_file << std::chrono::duration<double, std::milli>(diff).count() << "\t";  // Time
+  out_file << island.min_img_id << "\t";         // min_id
+  out_file << island.max_img_id << "\t";         // max_id
+  out_file << best_img << "\t";                  // img_id
+  out_file << overlap << "\t";                   // overlap
+  out_file << inliers << "\t";                   // Inliers
+  out_file << index_->numDescriptors() << "\t";  // Voc. Size
+  out_file << std::chrono::duration<double, std::milli>(diff).count()
+           << "\t";  // Time
   out_file << std::endl;
 }
 
@@ -307,8 +306,8 @@ void LCDetector::addImage(const unsigned image_id,
 }
 
 void LCDetector::filterMatches(
-      const std::vector<std::vector<cv::DMatch> >& matches_feats,
-      std::vector<cv::DMatch>* matches) {
+    const std::vector<std::vector<cv::DMatch> >& matches_feats,
+    std::vector<cv::DMatch>* matches) {
   // Clearing the current matches vector
   matches->clear();
 
@@ -321,8 +320,8 @@ void LCDetector::filterMatches(
 }
 
 void LCDetector::filterCandidates(
-      const std::vector<obindex2::ImageMatch>& image_matches,
-      std::vector<obindex2::ImageMatch>* image_matches_filt) {
+    const std::vector<obindex2::ImageMatch>& image_matches,
+    std::vector<obindex2::ImageMatch>* image_matches_filt) {
   image_matches_filt->clear();
 
   double max_score = image_matches[0].score;
@@ -330,8 +329,8 @@ void LCDetector::filterCandidates(
 
   for (unsigned i = 0; i < image_matches.size(); i++) {
     // Computing the new score
-    double new_score = (image_matches[i].score - min_score) /
-                       (max_score - min_score);
+    double new_score =
+        (image_matches[i].score - min_score) / (max_score - min_score);
     // Assessing if this image match is higher than a threshold
     if (new_score > min_score_) {
       obindex2::ImageMatch match = image_matches[i];
@@ -344,8 +343,8 @@ void LCDetector::filterCandidates(
 }
 
 void LCDetector::buildIslands(
-      const std::vector<obindex2::ImageMatch>& image_matches,
-      std::vector<Island>* islands) {
+    const std::vector<obindex2::ImageMatch>& image_matches,
+    std::vector<Island>* islands) {
   islands->clear();
 
   // We process each of the resulting image matchings
@@ -355,9 +354,8 @@ void LCDetector::buildIslands(
     double curr_score = image_matches[i].score;
 
     // Theoretical island limits
-    unsigned min_id = static_cast<unsigned>
-                              (std::max((int)curr_img_id - (int)island_offset_,
-                               0));
+    unsigned min_id = static_cast<unsigned>(
+        std::max((int)curr_img_id - (int)island_offset_, 0));
     unsigned max_id = curr_img_id + island_offset_;
 
     // We search for the closest island
@@ -375,10 +373,7 @@ void LCDetector::buildIslands(
 
     // Creating a new island if required
     if (!found) {
-      Island new_island(curr_img_id,
-                        curr_score,
-                        min_id,
-                        max_id);
+      Island new_island(curr_img_id, curr_score, min_id, max_id);
       islands->push_back(new_island);
     }
   }
@@ -391,10 +386,9 @@ void LCDetector::buildIslands(
   std::sort(islands->begin(), islands->end());
 }
 
-void LCDetector::getPriorIslands(
-      const Island& island,
-      const std::vector<Island>& islands,
-      std::vector<Island>* p_islands) {
+void LCDetector::getPriorIslands(const Island& island,
+                                 const std::vector<Island>& islands,
+                                 std::vector<Island>* p_islands) {
   p_islands->clear();
 
   // We search for overlapping islands
@@ -407,32 +401,29 @@ void LCDetector::getPriorIslands(
 }
 
 unsigned LCDetector::checkEpipolarGeometry(
-                                      const std::vector<cv::Point2f>& query,
-                                      const std::vector<cv::Point2f>& train) {
+    const std::vector<cv::Point2f>& query,
+    const std::vector<cv::Point2f>& train) {
   std::vector<uchar> inliers(query.size(), 0);
   if (query.size() > 7) {
-    cv::Mat F =
-      cv::findFundamentalMat(
-        cv::Mat(query), cv::Mat(train),      // Matching points
-        cv::FM_RANSAC,                        // RANSAC method
-        ep_dist_,                                 // Distance to epipolar line
-        conf_prob_,                              // Confidence probability
-        inliers);                            // Match status (inlier or outlier)
+    cv::Mat F = cv::findFundamentalMat(
+        cv::Mat(query), cv::Mat(train),  // Matching points
+        cv::FM_RANSAC,                   // RANSAC method
+        ep_dist_,                        // Distance to epipolar line
+        conf_prob_,                      // Confidence probability
+        inliers);                        // Match status (inlier or outlier)
   }
 
   // Extract the surviving (inliers) matches
   auto it = inliers.begin();
   unsigned total_inliers = 0;
   for (; it != inliers.end(); it++) {
-    if (*it)
-      total_inliers++;
+    if (*it) total_inliers++;
   }
 
   return total_inliers;
 }
 
-void LCDetector::ratioMatchingBF(const cv::Mat& query,
-                                 const cv::Mat& train,
+void LCDetector::ratioMatchingBF(const cv::Mat& query, const cv::Mat& train,
                                  std::vector<cv::DMatch>* matches) {
   matches->clear();
   cv::BFMatcher matcher(cv::NORM_HAMMING);

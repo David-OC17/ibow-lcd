@@ -1,49 +1,48 @@
 /**
-* This file is part of ibow-lcd.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* ibow-lcd is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* ibow-lcd is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with ibow-lcd. If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include <iostream>
+ * This file is part of ibow-lcd.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * ibow-lcd is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ibow-lcd is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ibow-lcd. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <boost/filesystem.hpp>
+#include <iostream>
 #include <opencv2/features2d.hpp>
 
 #include "ibow-lcd/lcdetector.h"
 
 void getFilenames(const std::string& directory,
                   std::vector<std::string>* filenames) {
-    using namespace boost::filesystem;
+  using namespace boost::filesystem;
 
-    filenames->clear();
-    path dir(directory);
+  filenames->clear();
+  path dir(directory);
 
-    // Retrieving, sorting and filtering filenames.
-    std::vector<path> entries;
-    copy(directory_iterator(dir), directory_iterator(), back_inserter(entries));
-    sort(entries.begin(), entries.end());
-    for (auto it = entries.begin(); it != entries.end(); it++) {
-        std::string ext = it->extension().c_str();
-        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  // Retrieving, sorting and filtering filenames.
+  std::vector<path> entries;
+  copy(directory_iterator(dir), directory_iterator(), back_inserter(entries));
+  sort(entries.begin(), entries.end());
+  for (auto it = entries.begin(); it != entries.end(); it++) {
+    std::string ext = it->extension().c_str();
+    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-        if (ext == ".png" || ext == ".jpg" ||
-            ext == ".ppm" || ext == ".jpeg") {
-            filenames->push_back(it->string());
-        }
+    if (ext == ".png" || ext == ".jpg" || ext == ".ppm" || ext == ".jpeg") {
+      filenames->push_back(it->string());
     }
+  }
 }
 
 int main(int argc, char** argv) {
@@ -76,8 +75,8 @@ int main(int argc, char** argv) {
 
     switch (result.status) {
       case ibow_lcd::LC_DETECTED:
-        std::cout << "--- Loop detected!!!: " << result.train_id <<
-                     " with " << result.inliers << " inliers" << std::endl;
+        std::cout << "--- Loop detected!!!: " << result.train_id << " with "
+                  << result.inliers << " inliers" << std::endl;
         break;
       case ibow_lcd::LC_NOT_DETECTED:
         std::cout << "No loop found" << std::endl;
